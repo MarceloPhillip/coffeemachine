@@ -40,6 +40,8 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		else{
 			factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
 			factory.getCashBox().release(Coin.halfDollar);
+			factory.getCashBox().release(Coin.nickel);
+			factory.getCashBox().release(Coin.penny);
 			factory.getDisplay().info("Insert coins and select a drink!");
 		}
 	}
