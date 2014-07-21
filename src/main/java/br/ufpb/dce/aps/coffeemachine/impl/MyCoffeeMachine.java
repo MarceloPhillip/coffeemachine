@@ -1,9 +1,11 @@
 package br.ufpb.dce.aps.coffeemachine.impl;
 
+import static org.mockito.Matchers.anyDouble;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachine;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachineException;
 import br.ufpb.dce.aps.coffeemachine.Coin;
 import br.ufpb.dce.aps.coffeemachine.ComponentsFactory;
+import br.ufpb.dce.aps.coffeemachine.Drink;
 import br.ufpb.dce.aps.coffeemachine.MockComponentsFactory;
 
 public class MyCoffeeMachine implements CoffeeMachine {
@@ -46,5 +48,19 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getCashBox().release(Coin.quarter);
 			factory.getDisplay().info("Insert coins and select a drink!");
 		}
+	}
+
+	public void select(Drink drink) {
+		factory.getCupDispenser().contains(1);
+		factory.getWaterDispenser().contains(anyDouble());
+		factory.getCoffeePowderDispenser().contains(anyDouble());
+		factory.getDisplay().info("Mixing ingredients.");
+		factory.getCoffeePowderDispenser().release(anyDouble());
+		factory.getWaterDispenser().release(anyDouble());
+		factory.getDisplay().info("Releasing drink.");
+		factory.getCupDispenser().release(1);
+		factory.getDrinkDispenser().release(anyDouble());
+		factory.getDisplay().info("Please, take your drink.");
+		factory.getDisplay().info("Insert coins and select a drink!");
 	}
 }
