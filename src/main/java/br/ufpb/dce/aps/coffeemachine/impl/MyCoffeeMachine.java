@@ -32,4 +32,10 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			throw new CoffeeMachineException("A moeda inserida não é válida para esta máquina!");
 		}
 	}
+
+	public void cancel() {
+		if (dolar == 0 && centavos == 0) {
+			throw new CoffeeMachineException("Nenhuma Moeda Inserida na Máquina!");
+		}
+	}
 }
