@@ -42,6 +42,8 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getCashBox().release(Coin.halfDollar);
 			factory.getCashBox().release(Coin.nickel);
 			factory.getCashBox().release(Coin.penny);
+			factory.getCashBox().release(Coin.quarter);
+			factory.getCashBox().release(Coin.quarter);
 			factory.getDisplay().info("Insert coins and select a drink!");
 		}
 	}
