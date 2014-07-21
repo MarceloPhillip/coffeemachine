@@ -37,5 +37,10 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		if (dolar == 0 && centavos == 0) {
 			throw new CoffeeMachineException("Nenhuma Moeda Inserida na Máquina!");
 		}
+		else{
+			factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
+			factory.getCashBox().release(Coin.halfDollar);
+			factory.getDisplay().info("Insert coins and select a drink!");
+		}
 	}
 }
