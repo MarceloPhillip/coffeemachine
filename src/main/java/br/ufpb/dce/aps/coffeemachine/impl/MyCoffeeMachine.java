@@ -13,6 +13,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	private int centavos = 0;
 	private int dolar = 0;
 	private ComponentsFactory factory;
+	private Coin dime = null;
 
 	public void init() {
 		factory = new MockComponentsFactory();
@@ -26,6 +27,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public void insertCoin(Coin dime) throws CoffeeMachineException {
 		try{
+			this.dime = dime;
 			dolar += dime.getValue() / 100;
 			centavos += dime.getValue() % 100;
 			factory.getDisplay().info("Total: US$ " + dolar + "." + centavos); //"Total: US$ 0.10"
@@ -36,30 +38,42 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void cancel() {
-		if (dolar == 0 && centavos == 0) {
-			throw new CoffeeMachineException("Nenhuma Moeda Inserida na Máquina!");
-		}
-		else{
+		if(dime != null){
 			factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
-			factory.getCashBox().release(Coin.halfDollar);
-			factory.getCashBox().release(Coin.nickel);
-			factory.getCashBox().release(Coin.penny);
-			factory.getCashBox().release(Coin.quarter);
-			factory.getCashBox().release(Coin.quarter);
+			if(dime == Coin.halfDollar){
+				factory.getCashBox().release(Coin.halfDollar);
+			}
+			else if(dime == Coin.nickel){
+				factory.getCashBox().release(Coin.nickel);
+				factory.getCashBox().release(Coin.penny);
+			}
+			else if(dime == Coin.quarter){
+				factory.getCashBox().release(Coin.quarter);
+				factory.getCashBox().release(Coin.quarter);
+			}
 			factory.getDisplay().info("Insert coins and select a drink!");
 		}
+		
+		else{
+			throw new CoffeeMachineException("Nenhuma Moeda Inserida na Máquina!");
+		}
+
 	}
 
 	public void select(Drink drink) {
-		factory.getCupDispenser().contains(1);
-		factory.getWaterDispenser().contains(anyDouble());
-		factory.getCoffeePowderDispenser().contains(anyDouble());
-		factory.getDisplay().info("Mixing ingredients.");
-		factory.getCoffeePowderDispenser().release(anyDouble());
-		factory.getWaterDispenser().release(anyDouble());
-		factory.getDisplay().info("Releasing drink.");
-		factory.getCupDispenser().release(1);
-		factory.getDrinkDispenser().release(anyDouble());
+		if(factory.getCupDispenser().contains(1)){
+			factory.getWaterDispenser().contains(anyDouble());
+			factory.getCoffeePowderDispenser().contains(anyDouble());
+			factory.getDisplay().info("Mixing ingredients.");
+			factory.getCoffeePowderDispenser().release(anyDouble());
+			factory.getWaterDispenser().release(anyDouble());
+			factory.getDisplay().info("Releasing drink.");
+			factory.getCupDispenser().release(1);
+			factory.getDrinkDispenser().release(anyDouble());
+		}
+		if(factory.getSugarDispenser().contains(2)){
+			
+		}
 		factory.getDisplay().info("Please, take your drink.");
 		factory.getDisplay().info("Insert coins and select a drink!");
 	}
