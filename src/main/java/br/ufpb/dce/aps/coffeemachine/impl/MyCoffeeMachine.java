@@ -1,5 +1,7 @@
 package br.ufpb.dce.aps.coffeemachine.impl;
 
+import java.util.*;
+
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachine;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachineException;
 import br.ufpb.dce.aps.coffeemachine.Coin;
@@ -11,7 +13,8 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	private int centavos = 0;
 	private int dolar = 0;
 	private ComponentsFactory factory;
-	private Coin dime = null;
+	private List<Coin> dime = new ArrayList<Coin>(); 
+	
 
 	public MyCoffeeMachine(ComponentsFactory factory) {
 		this.factory = factory;
@@ -20,8 +23,8 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void insertCoin(Coin dime) throws CoffeeMachineException {
+		this.dime.add(dime);
 		try{
-			this.dime = dime;
 			dolar += dime.getValue() / 100;
 			centavos += dime.getValue() % 100;
 			factory.getDisplay().info("Total: US$ " + dolar + "." + centavos); //"Total: US$ 0.10"
@@ -32,26 +35,21 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void cancel() {
-		if(dime != null){
-			factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
-			if(dime == Coin.halfDollar){
-				factory.getCashBox().release(Coin.halfDollar);
-			}
-			else if(dime == Coin.nickel){
-				factory.getCashBox().release(Coin.nickel);
-				factory.getCashBox().release(Coin.penny);
-			}
-			else if(dime == Coin.quarter){
-				factory.getCashBox().release(Coin.quarter);
-				factory.getCashBox().release(Coin.quarter);
-			}
-			factory.getDisplay().info("Insert coins and select a drink!");
-		}
-		
-		else{
+		if(dolar == 0 && centavos == 0){
 			throw new CoffeeMachineException("Nenhuma Moeda Inserida na Máquina!");
 		}
-
+		
+		factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
+		
+		for(Coin ord : Coin.reverse()){
+			for(Coin c : dime){
+				if(ord == c)
+					factory.getCashBox().release(c);
+				
+					
+			}
+		}
+		factory.getDisplay().info("Insert coins and select a drink!");
 	}
 
 	public void select(Drink drink) {
@@ -79,5 +77,6 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		
 		factory.getDisplay().info("Please, take your drink.");
 		factory.getDisplay().info("Insert coins and select a drink!");
+		dime.clear();
 	}
 }
