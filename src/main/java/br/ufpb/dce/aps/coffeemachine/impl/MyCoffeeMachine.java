@@ -56,27 +56,34 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		
 		factory.getCupDispenser().contains(1);
 		factory.getWaterDispenser().contains(0.1);
-		factory.getCoffeePowderDispenser().contains(0.1);
 		
-		if(drink == Drink.BLACK_SUGAR){
-			factory.getSugarDispenser().contains(0.1);
+		if(!factory.getCoffeePowderDispenser().contains(0.1)){
+			factory.getDisplay().warn("Out of Coffee Powder");
+			factory.getCashBox().release(Coin.quarter);
+			factory.getCashBox().release(Coin.dime);
+			factory.getDisplay().info("Insert coins and select a drink!");
 		}
-
-		factory.getDisplay().info("Mixing ingredients.");
-		factory.getCoffeePowderDispenser().release(0.1);
-		factory.getWaterDispenser().release(0.1);
-		
-		if(drink == Drink.BLACK_SUGAR){
-			factory.getSugarDispenser().release(0.1);
+		else{
+			if(drink == Drink.BLACK_SUGAR){
+				factory.getSugarDispenser().contains(0.1);
+			}
+	
+			factory.getDisplay().info("Mixing ingredients.");
+			factory.getCoffeePowderDispenser().release(0.1);
+			factory.getWaterDispenser().release(0.1);
+			
+			if(drink == Drink.BLACK_SUGAR){
+				factory.getSugarDispenser().release(0.1);
+			}
+			
+			factory.getDisplay().info("Releasing drink.");
+			factory.getCupDispenser().release(1);
+			factory.getDrinkDispenser().release(0.1);
+			
+			
+			factory.getDisplay().info("Please, take your drink.");
+			factory.getDisplay().info("Insert coins and select a drink!");
+			dime.clear();
 		}
-		
-		factory.getDisplay().info("Releasing drink.");
-		factory.getCupDispenser().release(1);
-		factory.getDrinkDispenser().release(0.1);
-		
-		
-		factory.getDisplay().info("Please, take your drink.");
-		factory.getDisplay().info("Insert coins and select a drink!");
-		dime.clear();
 	}
 }
