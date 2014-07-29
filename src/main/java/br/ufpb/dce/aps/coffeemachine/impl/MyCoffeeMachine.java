@@ -75,6 +75,11 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getCashBox().release(Coin.quarter);
 			factory.getCashBox().release(Coin.dime);
 			factory.getDisplay().info("Insert coins and select a drink!");
+			return;
+		}
+		
+		if(!factory.getCreamerDispenser().contains(0.1)){
+			return;
 		}
 		
 		else{
@@ -85,11 +90,10 @@ public class MyCoffeeMachine implements CoffeeMachine {
 					factory.getDisplay().info("Insert coins and select a drink!");
 					return;
 				}
-			}
+			} 
 			
-			
-	
 			factory.getDisplay().info("Mixing ingredients.");
+			factory.getCreamerDispenser().release(0.1);
 			factory.getCoffeePowderDispenser().release(0.1);
 			factory.getWaterDispenser().release(0.1);
 			
@@ -105,6 +109,6 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getDisplay().info("Please, take your drink.");
 			factory.getDisplay().info("Insert coins and select a drink!");
 			dime.clear();
-		}
+		}	
 	}
 }
