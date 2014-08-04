@@ -78,10 +78,6 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			return;
 		}
 		
-		if(!factory.getCreamerDispenser().contains(0.1)){
-			return;
-		}
-		
 		else{
 			if(drink == Drink.BLACK_SUGAR){
 				if(!factory.getSugarDispenser().contains(0.1)){
@@ -90,15 +86,22 @@ public class MyCoffeeMachine implements CoffeeMachine {
 					factory.getDisplay().info("Insert coins and select a drink!");
 					return;
 				}
-			} 
+			}
+			
+			if(drink == Drink.WHITE){
+                this.factory.getCreamerDispenser().contains(0.1);
+			}
 			
 			factory.getDisplay().info("Mixing ingredients.");
-			factory.getCreamerDispenser().release(0.1);
 			factory.getCoffeePowderDispenser().release(0.1);
 			factory.getWaterDispenser().release(0.1);
 			
 			if(drink == Drink.BLACK_SUGAR){
 				factory.getSugarDispenser().release(0.1);
+			}
+			
+			if (drink == Drink.WHITE){
+                this.factory.getCreamerDispenser().release(0.1);
 			}
 			
 			factory.getDisplay().info("Releasing drink.");
