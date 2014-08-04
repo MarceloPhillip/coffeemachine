@@ -2,6 +2,7 @@ package br.ufpb.dce.aps.coffeemachine.impl;
 
 import java.util.*;
 
+import br.ufpb.dce.aps.coffeemachine.CashBox;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachine;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachineException;
 import br.ufpb.dce.aps.coffeemachine.Coin;
@@ -14,6 +15,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	private int dolar = 0;
 	private ComponentsFactory factory;
 	private List<Coin> dime = new ArrayList<Coin>(); 
+	private CashBox cashBox;
 	
 
 	public MyCoffeeMachine(ComponentsFactory factory) {
@@ -89,20 +91,40 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			}
 			
 			if(drink == Drink.WHITE){
-                this.factory.getCreamerDispenser().contains(0.1);
+                this.factory.getCreamerDispenser().contains(0.1);  
 			}
 			
+			if(drink == Drink.WHITE_SUGAR){
+				factory.getCreamerDispenser().contains(0.1);
+				factory.getSugarDispenser().contains(0.1);
+				factory.getCashBox().release(Coin.dime);
+				factory.getCashBox().release(Coin.nickel);
+				factory.getCashBox().count(Coin.dime);
+				factory.getCashBox().count(Coin.nickel);
+				factory.getDisplay().info("Insert coins and select a drink!");
+				
+			}
+			
+			
+					
 			factory.getDisplay().info("Mixing ingredients.");
 			factory.getCoffeePowderDispenser().release(0.1);
 			factory.getWaterDispenser().release(0.1);
 			
+			if(drink == Drink.WHITE_SUGAR){
+				factory.getCreamerDispenser().release(0.1);
+				factory.getSugarDispenser().release(0.1);
+			}
 			if(drink == Drink.BLACK_SUGAR){
 				factory.getSugarDispenser().release(0.1);
 			}
 			
-			if (drink == Drink.WHITE){
+			if(drink == Drink.WHITE){
                 this.factory.getCreamerDispenser().release(0.1);
 			}
+		
+			
+			
 			
 			factory.getDisplay().info("Releasing drink.");
 			factory.getCupDispenser().release(1);
@@ -110,8 +132,23 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			
 			
 			factory.getDisplay().info("Please, take your drink.");
+			
 			factory.getDisplay().info("Insert coins and select a drink!");
 			dime.clear();
 		}	
 	}
+	
+	private List<Integer> countCoins(int change){
+		List<Integer> l = new ArrayList<Integer>();
+		for(Coin R : Coin.reverse()){
+			while(R.getValue() <= change){
+				cashBox.count(R);
+				l.add(R);
+			}
+		}
+		return null;
+		
+	}
+	
+	
 }
