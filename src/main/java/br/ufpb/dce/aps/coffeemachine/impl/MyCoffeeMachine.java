@@ -98,17 +98,18 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			if(!this.gerente.semTroco(this.gerente.calcTroco())){
 				this.factory.getDisplay().warn("I do not have enought change");
 				this.gerente.devolverMoeda();
-				return;
+			}
+			
+			if(this.gerente.planCoins(this.gerente.calcTroco()) != null){
+				this.gerente.liberarMoeda(this.gerente.calcTroco());
 			}
 			
 			this.gerente.moedaReversa(this.gerente.calcTroco());
-		
-			
 			
 			this.factory.getDisplay().info("Mixing ingredients.");
 			this.factory.getCoffeePowderDispenser().release(0.1);
 			this.factory.getWaterDispenser().release(0.1);
-		
+			
 			if (drink == Drink.WHITE_SUGAR) {
 				this.factory.getCreamerDispenser().release(0.1);
 				this.factory.getSugarDispenser().release(0.1);
