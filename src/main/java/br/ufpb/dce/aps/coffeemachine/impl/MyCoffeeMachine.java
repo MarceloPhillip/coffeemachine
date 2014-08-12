@@ -56,6 +56,12 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public void select(Drink drink) {
 		
+		if(this.gerente.calcTroco()< 0){
+			this.factory.getDisplay().warn("Please, insert enought money");
+			this.gerente.devolverMoeda();	
+			return;
+		}
+		
 		if(!this.factory.getCupDispenser().contains(1)) {
 			this.factory.getDisplay().warn("Out of Cup");
 			this.gerente.devolverMoeda();
