@@ -8,27 +8,28 @@ public class GerenteDeMaquina {
 	private GerenteDeBebidas gerenteDeBebidas = new GerenteDeBebidas();
 	
 	public void iniciarPedido(ComponentsFactory factory, GerenteDeMoedas gerenteDeMoedas, Drink drink) {
-			
+		
+		gerenteDeBebidas.iniciarBebida(factory, drink);
+		
 		if(!gerenteDeMoedas.conferirDinheiro(factory, gerenteDeBebidas.getValor())){
 			return;
 		}
-		
-		gerenteDeBebidas.iniciarBebida(drink, factory);
 
-		if (!gerenteDeBebidas.conferirIngredientes(drink, factory)) {
+		if (!gerenteDeBebidas.conferirIngredientes(factory, drink)) {
 			gerenteDeMoedas.liberarMoedas(factory, false);
 			return;
 		}
 		if (!gerenteDeBebidas.verificaAcucar(factory)) {
 			gerenteDeMoedas.liberarMoedas(factory, false);
 			return;
+			
 		}
 		
 		if(!gerenteDeMoedas.verificarTroco(factory, gerenteDeBebidas.getValor())){
 			return;
 		}
 
-		gerenteDeBebidas.misturarIngredientes(factory);
+		gerenteDeBebidas.misturarIngredientes(factory, drink);
 		gerenteDeBebidas.release(factory);
 		
 		if( gerenteDeMoedas.getTotal() % gerenteDeBebidas.getValor() != 0 && gerenteDeMoedas.getTotal() > gerenteDeBebidas.getValor()) {

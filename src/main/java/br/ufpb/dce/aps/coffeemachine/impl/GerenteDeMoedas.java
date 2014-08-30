@@ -28,8 +28,7 @@ public class GerenteDeMoedas {
 		}
 	}
 
-	public void cancelar(ComponentsFactory factory)
-			throws CoffeeMachineException {
+	public void cancelar(ComponentsFactory factory) throws CoffeeMachineException {
 		if (total == 0) {
 			throw new CoffeeMachineException("sem moedas inseridas");
 		}
