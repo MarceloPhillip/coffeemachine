@@ -2,104 +2,107 @@ package br.ufpb.dce.aps.coffeemachine.impl;
 
 import java.util.ArrayList;
 
-import br.ufpb.dce.aps.coffeemachine.CashBox;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachineException;
 import br.ufpb.dce.aps.coffeemachine.Coin;
 import br.ufpb.dce.aps.coffeemachine.ComponentsFactory;
+import br.ufpb.dce.aps.coffeemachine.Messages;
 
 
 public class GerenteDeMoedas {
-	Coin[] coins;
-	CashBox cashBox;
-	private final int drink = 35;
-	ComponentsFactory factory;
+	private Coin[] reverso = Coin.reverse();
+	private int total;
+	private int inteiro, centavos;
+	private ArrayList<Coin> moedas = new ArrayList<Coin>();
+	private ArrayList<Coin> trocos = new ArrayList<Coin>();
 
+	public void inserirMoeda(ComponentsFactory factory, Coin coin)throws CoffeeMachineException {
+		try {
+			total += coin.getValue();
+			moedas.add(coin);
+			inteiro = total/100;
+			centavos = total%100;
+			factory.getDisplay().info(
+					"Total: US$ " + inteiro + "." + centavos);
+		} catch (NullPointerException e) {
+			throw new CoffeeMachineException("moeda invalida");
+		}
+	}
 
-	public GerenteDeMoedas(){
-		this.coins = new Coin[50];
+	public void cancelar(ComponentsFactory factory)
+			throws CoffeeMachineException {
+		if (total == 0) {
+			throw new CoffeeMachineException("sem moedas inseridas");
+		}
+		liberarMoedas(factory, true);
+
 	}
-	
-	public void devolverMoeda(){
-		Coin[] c = Coin.reverse();
-		for (int i = 0; i < c.length; i++) {
-			for (int x = 0; x < this.coins.length; x++) {
-				if (c[i].equals(this.coins[x])) {
-					factory.getCashBox().release(this.coins[x]);
-					coins[x] = null;
+
+	public void liberarMoedas(ComponentsFactory factory, Boolean confirmacao) {
+		if (confirmacao) {
+			factory.getDisplay().warn(Messages.CANCEL);
+		}
+		for (Coin re : this.reverso) {
+			for (Coin aux : this.moedas) {
+				if (aux == re) {
+					factory.getCashBox().release(aux);
 				}
 			}
 		}
-		clearList();
-		factory.getDisplay().info("Insert coins and select a drink!");
+		total = 0;
+		liberarMoedas();
+		factory.getDisplay().info(Messages.INSERT_COINS);
 	}
-	
-	public void clearList(){
-		for (int c = 0; c < this.coins.length; c++) {
-			coins[c] = null;
-		}
-	}
-	
-	public ArrayList <Coin> moedaReversa(int valor){
-		ArrayList<Coin> listAuxiliar = new ArrayList<Coin>();
-		for (int c = 0; c < Coin.reverse().length; c++){
-			while (Coin.reverse()[c].getValue() <= valor){
-				listAuxiliar.add(Coin.reverse()[c]);
-				valor = valor - Coin.reverse()[c].getValue();
-			}
-		}
-		return listAuxiliar;
-	}
-	
-	public ArrayList <Coin> liberarMoeda(int valor){
-		ArrayList<Coin> listAuxiliar = new ArrayList<Coin>();
-		for (int i = 0; i < Coin.reverse().length; i++){
-			while (Coin.reverse()[i].getValue() <= valor){
-				cashBox.release(Coin.reverse()[i]);
-				valor = valor - Coin.reverse()[i].getValue();
-			}
-		}
-		return listAuxiliar;
-	}
-	
-	public int calcTroco(){
-		int contCoins = 0;
-		for(Coin c : Coin.reverse()){
-			for(Coin aux : coins){
-				if(aux == c){
-					contCoins = contCoins + aux.getValue();
+
+	public boolean calculaTroco(ComponentsFactory factory, double valorDaBebida) {
+		double troco = total - valorDaBebida;
+		for (Coin moeda : reverso) {
+			if (moeda.getValue() <= troco && factory.getCashBox().count(moeda) > 0) {
+				while (moeda.getValue() <= troco) {
+					troco = troco - moeda.getValue();
+					trocos.add(moeda);
 				}
 			}
 		}
-		return contCoins - drink;
+		return (troco == 0);
 	}
-	
-	public boolean semTroco(int troco){
-		for(Coin c : Coin.reverse()){
-			if(c.getValue() <= troco && cashBox.count(c) > 0){
-				troco -= c.getValue();
-			}
-		}
-		
-		return troco == 0;
-	}
-	
-	public int[] planCoins(int change) {
-		int[] changePlan = new int[6];
-		int i = 0;
-		for(Coin r : Coin.reverse()){
-			if(r.getValue() <= change && cashBox.count(r) > 0){
-				while(r.getValue() <= change){
-					change -= r.getValue();
-					changePlan[i]++;
+
+	public void liberaTroco(ComponentsFactory factory, double valorDaBebida) {
+		for (Coin moeda : reverso) {
+			for (Coin moedaDeTroco : trocos) {
+				if (moedaDeTroco == moeda) {
+					factory.getCashBox().release(moeda);
 				}
 			}
-			i++;
 		}
-		
-		if(change != 0){
-			throw new CoffeeMachineException("Não tem troco");
+	}
+
+	public boolean conferirDinheiro(ComponentsFactory factory,
+			double valorDaBebida) {
+		if (total < valorDaBebida || total == 0) {
+			factory.getDisplay().warn(Messages.NO_ENOUGHT_MONEY);
+			liberarMoedas(factory, false);
+			return false;
 		}
-		
-		return changePlan;
+		return true;
+	}
+
+	public boolean verificarTroco(ComponentsFactory factory,
+			double valorDaBebida) {
+		if (total % valorDaBebida != 0 && total > valorDaBebida) {
+			if (!calculaTroco(factory, valorDaBebida)) {
+				factory.getDisplay().warn(Messages.NO_ENOUGHT_CHANGE);
+				liberarMoedas(factory, false);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void liberarMoedas() {
+		moedas.clear();
+	}
+
+	public int getTotal() {
+		return total;
 	}
 }
