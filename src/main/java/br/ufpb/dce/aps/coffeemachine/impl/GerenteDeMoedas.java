@@ -1,7 +1,6 @@
 package br.ufpb.dce.aps.coffeemachine.impl;
 
 import java.util.ArrayList;
-
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachineException;
 import br.ufpb.dce.aps.coffeemachine.Coin;
 import br.ufpb.dce.aps.coffeemachine.ComponentsFactory;
@@ -11,7 +10,8 @@ import br.ufpb.dce.aps.coffeemachine.Messages;
 public class GerenteDeMoedas {
 	private Coin[] reverso = Coin.reverse();
 	private int total;
-	private int inteiro, centavos;
+	private int inteiro;
+	private int centavos;
 	private ArrayList<Coin> moedas = new ArrayList<Coin>();
 	private ArrayList<Coin> trocos = new ArrayList<Coin>();
 
@@ -55,8 +55,9 @@ public class GerenteDeMoedas {
 	public boolean calculaTroco(ComponentsFactory factory, double valorDaBebida) {
 		double troco = total - valorDaBebida;
 		for (Coin moeda : reverso) {
-			if (moeda.getValue() <= troco && factory.getCashBox().count(moeda) > 0) {
-				while (moeda.getValue() <= troco) {
+			if (moeda.getValue() <= troco) {
+				int count = factory.getCashBox().count(moeda);
+				while (moeda.getValue() <= troco &&  count > 0) {
 					troco = troco - moeda.getValue();
 					trocos.add(moeda);
 				}
@@ -87,18 +88,24 @@ public class GerenteDeMoedas {
 
 	public boolean verificarTroco(ComponentsFactory factory,
 			double valorDaBebida) {
-		if (total % valorDaBebida != 0 && total > valorDaBebida) {
-			if (!calculaTroco(factory, valorDaBebida)) {
-				factory.getDisplay().warn(Messages.NO_ENOUGHT_CHANGE);
-				liberarMoedas(factory, false);
-				return false;
-			}
+		if(!calculaTroco(factory, valorDaBebida)){
+			factory.getDisplay().warn(Messages.NO_ENOUGHT_CHANGE);
+			liberarMoedas(factory, false);
+			return false;
 		}
+//		if (total % valorDaBebida != 0 && total > valorDaBebida) {
+//			if (!calculaTroco(factory, valorDaBebida)) {
+//				factory.getDisplay().warn(Messages.NO_ENOUGHT_CHANGE);
+//				liberarMoedas(factory, false);
+//				return false;
+//			}
+//		}
 		return true;
 	}
 
 	public void liberarMoedas() {
 		moedas.clear();
+		total = 0;
 	}
 
 	public int getTotal() {

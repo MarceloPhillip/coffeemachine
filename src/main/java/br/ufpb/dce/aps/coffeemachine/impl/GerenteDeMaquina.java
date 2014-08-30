@@ -9,7 +9,7 @@ public class GerenteDeMaquina {
 	
 	public void iniciarPedido(ComponentsFactory factory, GerenteDeMoedas gerenteDeMoedas, Drink drink) {
 		
-		gerenteDeBebidas.iniciarBebida(factory, drink);
+		this.gerenteDeBebidas.iniciarBebida(factory, drink);
 		
 		if(!gerenteDeMoedas.conferirDinheiro(factory, gerenteDeBebidas.getValor())){
 			return;
@@ -32,12 +32,13 @@ public class GerenteDeMaquina {
 		gerenteDeBebidas.misturarIngredientes(factory, drink);
 		gerenteDeBebidas.release(factory);
 		
-		if( gerenteDeMoedas.getTotal() % gerenteDeBebidas.getValor() != 0 && gerenteDeMoedas.getTotal() > gerenteDeBebidas.getValor()) {
+		
+		if (gerenteDeMoedas.getTotal() >= gerenteDeBebidas.getValor()) {
 			gerenteDeMoedas.liberaTroco(factory, gerenteDeBebidas.getValor());
+		
 		}
 		
 		factory.getDisplay().info(Messages.INSERT_COINS);
-		
 		gerenteDeMoedas.liberarMoedas();
 	}
 
