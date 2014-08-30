@@ -12,20 +12,32 @@ public class GerenteDeMoedas {
 	private int total;
 	private int inteiro;
 	private int centavos;
+	private String type = "vazio";
 	private ArrayList<Coin> moedas = new ArrayList<Coin>();
 	private ArrayList<Coin> trocos = new ArrayList<Coin>();
 
 	public void inserirMoeda(ComponentsFactory factory, Coin coin)throws CoffeeMachineException {
-		try {
-			total += coin.getValue();
-			moedas.add(coin);
-			inteiro = total/100;
-			centavos = total%100;
-			factory.getDisplay().info(
-					"Total: US$ " + inteiro + "." + centavos);
-		} catch (NullPointerException e) {
-			throw new CoffeeMachineException("moeda invalida");
+		if(this.type.equalsIgnoreCase("Cracha")){
+			factory.getDisplay().warn(Messages.CAN_NOT_INSERT_COINS);
+			releaseCoinCracha(factory, coin);
+			return;
 		}
+		else{
+			try {
+				total += coin.getValue();
+				moedas.add(coin);
+				inteiro = total/100;
+				centavos = total%100;
+				factory.getDisplay().info("Total: US$ " + inteiro + "." + centavos);
+			}
+			catch (NullPointerException e) {
+				throw new CoffeeMachineException("moeda invalida");
+			}
+		}	
+	}
+	
+	public void setModo(String newType) {
+		this.type = newType;
 	}
 
 	public void cancelar(ComponentsFactory factory) throws CoffeeMachineException {
@@ -111,4 +123,8 @@ public class GerenteDeMoedas {
 	public int getTotal() {
 		return total;
 	}
+	
+	private void releaseCoinCracha(ComponentsFactory factory, Coin coin) {
+				factory.getCashBox().release(coin);
+			}
 }
