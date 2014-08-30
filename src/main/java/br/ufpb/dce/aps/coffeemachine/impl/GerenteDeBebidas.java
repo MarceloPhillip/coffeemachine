@@ -35,6 +35,7 @@ public class GerenteDeBebidas {
 		}
 		else if (bebida.getDrink() == Drink.WHITE || bebida.getDrink() == Drink.WHITE_SUGAR){
 			if (!factory.getCreamerDispenser().contains(anyDouble())){
+				factory.getDisplay().warn(Messages.OUT_OF_CREAMER);
 				return false;
 			}
 		}
