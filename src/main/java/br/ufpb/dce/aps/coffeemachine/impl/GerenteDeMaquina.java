@@ -13,9 +13,9 @@ public class GerenteDeMaquina {
 			return;
 		}
 		
-		gerenteDeBebidas.iniciarBebida(drink,factory);
+		gerenteDeBebidas.iniciarBebida(drink, factory);
 
-		if (!gerenteDeBebidas.conferirIngredientes(factory)) {
+		if (!gerenteDeBebidas.conferirIngredientes(drink, factory)) {
 			gerenteDeMoedas.liberarMoedas(factory, false);
 			return;
 		}

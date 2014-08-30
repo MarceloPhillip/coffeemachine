@@ -20,26 +20,35 @@ public class GerenteDeBebidas {
 		}
 	}
 	
-	public boolean conferirIngredientes(ComponentsFactory factory) {
+	public boolean conferirIngredientes(Drink drink, ComponentsFactory factory) {
 		if (!factory.getCupDispenser().contains(1)) {
 			factory.getDisplay().warn(Messages.OUT_OF_CUP);
 			return false;
 		}
-		else if (!factory.getWaterDispenser().contains(100)) {
-			factory.getDisplay().warn(Messages.OUT_OF_WATER);
-			return false;
+		if(drink == Drink.BLACK || drink == Drink.BLACK_SUGAR ){
+			if (!factory.getWaterDispenser().contains(100)) {
+				factory.getDisplay().warn(Messages.OUT_OF_WATER);
+				return false;
+			}
 		}
-		else if (!factory.getCoffeePowderDispenser().contains(15)) {
+		else {
+			if (!factory.getWaterDispenser().contains(80)) {
+				factory.getDisplay().warn(Messages.OUT_OF_WATER);
+				return false;
+			}
+		}
+		if (!factory.getCoffeePowderDispenser().contains(15)) {
 			factory.getDisplay().warn(Messages.OUT_OF_COFFEE_POWDER);
 			return false;
 		}
 		else if (bebida.getDrink() == Drink.WHITE || bebida.getDrink() == Drink.WHITE_SUGAR){
-			if (!factory.getCreamerDispenser().contains(anyDouble())){
+			if (!factory.getCreamerDispenser().contains(20)){
 				factory.getDisplay().warn(Messages.OUT_OF_CREAMER);
 				return false;
 			}
 		}
-			return true;
+		return true;
+
 	}
 	
 	public boolean verificaAcucar(ComponentsFactory factory){
@@ -55,7 +64,6 @@ public class GerenteDeBebidas {
 	public void misturarIngredientes (ComponentsFactory factory){
 		factory.getDisplay().info(Messages.MIXING);
 		factory.getCoffeePowderDispenser().release(15);
-		factory.getWaterDispenser().release(100);
 	}
 	
 	public void release(ComponentsFactory factory){
